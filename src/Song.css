@@ -1,0 +1,17 @@
+.song-card {
+    display: flex;
+    height: 80px;
+    margin-bottom: 15px;
+}
+
+.song-card > img {
+    height: 100%;
+}
+
+.song-card > .info {
+    margin-left: 10px;
+}
+
+.song-card > .info > .title {
+    margin: 10px 0;
+}

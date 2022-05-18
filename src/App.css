@@ -1,0 +1,29 @@
+.App {
+  text-align: center;
+}
+
+.player-wrapper {
+  margin: auto;
+  position: relative;
+  display: none;
+  padding-top: 56.25% /* Player ratio: 100 / (1280 / 720) */
+}
+
+.react-player {
+  position: absolute;
+  top: 0;
+  left: 0;
+}
+
+.controlls {
+  width: fit-content;
+  margin: 20px auto;
+}
+
+.input {
+  border: none;
+  border-bottom: 1px solid black;
+  padding: 5px;
+  outline: none;
+  margin-right: 10px;
+}
