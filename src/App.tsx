@@ -27,7 +27,7 @@ function App() {
   }
 
   const wsSetup = () => {
-    const socket = new WebSocket("ws://172.105.131.56:8080")
+    const socket = new WebSocket("wss://savage-radio.pl:8080")
 
     socket.onopen = () => {
       console.log("Socket Connected")
