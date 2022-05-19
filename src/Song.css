@@ -1,6 +1,7 @@
 .song-card {
     display: flex;
     height: 80px;
+    max-width: 420px;
     margin-bottom: 15px;
 }
 

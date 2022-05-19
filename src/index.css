@@ -28,11 +28,6 @@ code {
   cursor: pointer;
 }
 
-.songsList {
-  width: 80%;
-  max-width: 300px;
-}
-
 ol > li {
   text-transform: capitalize;
 }
