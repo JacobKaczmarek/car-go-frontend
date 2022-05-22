@@ -33,8 +33,8 @@ function App() {
   }
 
   const wsSetup = () => {
-    // const socket = io("wss://savage-radio.pl:8080")
-    const socket = io("ws://192.168.1.7:8080/")
+    const socket = io("wss://savage-radio.pl:8080")
+    // const socket = io("ws://192.168.1.7:8080/")
 
     socket.on('init', (data) => {
       setQueue(data.queue)
