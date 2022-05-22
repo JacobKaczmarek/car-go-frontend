@@ -1,0 +1,35 @@
+.users {
+    position: absolute;
+    bottom: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    background-color: #3f3f3f;
+    border-radius: 5px;
+    color: white;
+}
+
+.toggle {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 5px;
+}
+
+.toggle > p {
+    margin: 0;
+    margin-right: 10px;
+}
+
+.users-list {
+    background-color: #3f3f3f;
+    color: white;
+    padding: 0 5px;
+}
+
+.users-list > p {
+    margin: 5px;
+}
+
+.text-green {
+    color: #00b900;
+}

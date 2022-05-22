@@ -1,19 +1,25 @@
 import { BaseSyntheticEvent, createRef, useEffect, useState } from 'react'
 import ReactPlayer from 'react-player';
 import Queue from './Queue';
+import Controlls from './Controlls';
+import { io, Socket } from 'socket.io-client';
 
 import './App.css'
 import { ISong } from './models/song';
+import Login from './Login';
+import Users from './Users';
+import { IUser } from './models/user';
 
 function App() {
-  const apiUrl = 'https://youtube.googleapis.com/youtube/v3'
   const [link, setLink] = useState('')
   const [playing, setPlaying] = useState(true)
   const [queue, setQueue] = useState<ISong[]>([])
-  const [query, setQuery] = useState('')
-  const [socket, setSocket] = useState<WebSocket>()
+  const [users, setUsers] = useState<IUser[]>([])
+  const [socket, setSocket] = useState<Socket>()
+  const [loginDialogVisible, setLoginDialogVisible] = useState(true);
   
   const playerRef = createRef<ReactPlayer>();
+ 
 
   const nextSong = () => {
     setQueue(queue.slice(1))
@@ -27,32 +33,41 @@ function App() {
   }
 
   const wsSetup = () => {
-    const socket = new WebSocket("wss://savage-radio.pl:8080")
+    // const socket = io("wss://savage-radio.pl:8080")
+    const socket = io("ws://192.168.1.7:8080/")
 
-    socket.onopen = () => {
-      console.log("Socket Connected")
-    }
+    socket.on('init', (data) => {
+      setQueue(data.queue)
+      setUsers(data.users)
 
-    socket.onmessage = (message) => {
-      const q = JSON.parse(message.data)
-      if (q.length > 0) {
-        setQueue(q)
-
-        console.log(q, queue)
-        if (queue.length === 0 || q.length < queue.length) {
-          console.log('skip it')
-          changeLink(q[0].id)
-        }
+      if (data.queue.length) {
+        changeLink(data.queue[0].id)
       }
-    }
+    })
 
-    socket.onclose = (event) => {
-      console.log("Socket Closed Connection: ", event)
-    }
+    socket.on('users', (data) => {
+      setUsers(data)
+    })
 
-    socket.onerror = (error) => {
-      console.log("Socket error: ", error)
-    }
+    socket.on('update', (q) => {
+      setQueue(q)
+
+      if (q.length == 1) {
+        changeLink(q[0].id)
+      }
+    })
+
+    socket.on('skip', (q) => {
+      
+      if (q.length) {
+        changeLink(q[0].id)
+      } else {
+        setLink('')
+      }
+
+      setQueue(q)
+    })
+
     setSocket(socket)
   }
 
@@ -64,33 +79,19 @@ function App() {
     nextSong()
   }
 
-  const handleQueryChange = (q: BaseSyntheticEvent) => {
-    setQuery(q.target.value)
-  }
-
-  const addToQueue = () => {
+  const addToQueue = (song: ISong) => {
     if (!socket) return
 
-    fetch(`${apiUrl}/search?q=${query}&key=${import.meta.env.VITE_API_KEY}`)
-      .then(res => res.json())
-      .then(res => fetch(`${apiUrl}/videos?part=snippet%2CcontentDetails%2Cstatistics&id=${res.items[0].id.videoId}&key=${import.meta.env.VITE_API_KEY}`))
-      .then(res => res.json())
-      .then(res => {
-        const song = {
-          id: res.items[0].id,
-          title: res.items[0].snippet.title,
-          channel: res.items[0].snippet.channelTitle,
-          thumbnail: res.items[0].snippet.thumbnails.standard.url
-        } as ISong
-
-        socket.send(JSON.stringify(song))
-        setQuery('')
-      })
-    
+    socket.emit('add', song)
   }
 
   const skip = () => {
-    socket?.send('skip')
+    socket?.emit('skip')
+  }
+
+  const handleLogin = (name: string) => {
+    socket?.emit('register', name)
+    setLoginDialogVisible(false);
   }
 
   useEffect(() => {
@@ -122,30 +123,11 @@ function App() {
         />
       </div>
 
-      <div className="controlls">
-        <input
-            type="text"
-            value={query}
-            className="input"
-            onChange={handleQueryChange}
-        ></input>
-
-        <button
-            onClick={addToQueue}
-            className="btn"
-        >
-          Dodaj
-        </button>
-
-        <button
-            onClick={skip}
-            className="btn"
-        >
-          Skip
-        </button>
-      </div>
+      <Controlls addSong={addToQueue} skip={skip}></Controlls>
 
       <Queue songs={ queue }></Queue>
+      <Users users={users} />
+      {loginDialogVisible && <Login handleLogin={handleLogin}/>}
     </div>
   )
 }

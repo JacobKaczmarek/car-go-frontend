@@ -1,14 +1,20 @@
 .App {
   text-align: center;
+  width: 100vw;
+  max-width: 420px;
+}
+
+input {
+  font-size: 16px !important;
 }
 
 .player-wrapper {
   margin: auto;
   position: relative;
-  width: 420px;
+  width: 100%;
   max-width: 420px;
-  padding-top: 56.25% /* Player ratio: 100 / (1280 / 720) */;
-  height: 0;
+  /* padding-top: 56.25%;  */
+  height: 236px;
 }
 
 .react-player {
@@ -17,17 +23,4 @@
   left: 0;
   width: 100%;
   height: 100%;
-}
-
-.controlls {
-  width: fit-content;
-  margin: 20px auto;
-}
-
-.input {
-  border: 1px solid black;
-  padding: 5px;
-  outline: none;
-  margin-right: 10px;
-  -webkit-appearance: none; /* add this */
 }

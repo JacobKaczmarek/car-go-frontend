@@ -1,6 +1,8 @@
 import { ISong } from "./models/song"
 import Song from "./Song"
 
+import './Queue.css'
+
 type QueueProps = {
     songs: ISong[],
 }
@@ -8,7 +10,7 @@ type QueueProps = {
 function Queue(props: QueueProps) {
 
     return (
-        <div>
+        <div className="queue">
             {props.songs.map((song: ISong, index: number) => (
                 <Song song={song} key={index}></Song>
             ))}
